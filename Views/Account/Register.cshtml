@@ -1,0 +1,35 @@
+﻿@model QualificationSite.ViewModel.RegistryViewModel
+@{
+    ViewData["Title"] = "Регистрация";
+    Layout = "_Layout";
+}
+
+<div class="container-md">
+    <form method="post" action="~/Account/Register/">
+        <div class="form-group">
+            <div class="p-2">
+                <label for="Login">Логин</label>
+                <input class="form-control" type="text" name="Login" placeholder="Введите логин"/>
+            </div>
+            <div class="p-2">
+                <label for="Email">E-Mail</label>
+                <input class="form-control" type="text" name="Email" placeholder="Введите e-mail"/>
+            </div>
+            <div class="p-2">
+                <label f    or="Password">Пароль</label>
+                <input class="form-control" type="password" name="Password" placeholder="Give me a password"/>
+            </div>
+            <div class="p-2">
+                <label for="RepeatPassword">Повторите пароль</label>
+                <input class="form-control" type="password" name="RepeatPassword" placeholder="Give me a password again"></input>
+            </div>
+            <div class="p-2">
+                <input class="btn btn-primary" type="submit" value="Зарегистрироваться">
+                <a href="~/Account/Login" class="btn btn-warning">У меня уже есть аккаунт</a>
+            </div>
+            <div>
+                <p class="text-dark p-0">@ViewBag.ErrorDesc</p>
+            </div>
+        </div>
+    </form>
+</div>

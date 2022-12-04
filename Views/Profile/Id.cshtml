@@ -1,0 +1,25 @@
+﻿@model QualificationSite.Models.Profile
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Профиль";
+}
+<p class="p-0">Запрошен профиль с id: @Model.Id</p>
+<div class="row justify-content-end">
+    <div class="col col-3 align-content-end">
+        <h3>@Model.Name @Model.Surname</h3>
+    </div>
+</div>
+<div class="row justify-content-end">
+    <div class="col col-2 align-content-end">
+        <h6 class="float-start p-1"><span class="btn-info">Возраст:</span> @Model.Age лет</h6>
+        <h6 class="float-start p-1"><span class="btn-info">Языки:</span> @string.Join(", ", Model.Languages)</h6>
+        <h6 class="float-start p-1"><span class="btn-info">Образование:</span> @Model.University</h6>
+        <h6 class="float-start p-1"><span class="btn-info">Город:</span> @Model.City</h6>
+    </div>
+    <div class="col col-auto align-content-start m-3">
+        @{
+            var photoPath = "profile_photo_" + Model.Id + ".jpg";
+            <img class="float-end" alt="Фото профиля" src="~/Resources/ProfilePhotos/@photoPath" width="150" height="200"/>
+        }
+    </div>
+</div>
