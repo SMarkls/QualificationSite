@@ -1,0 +1,40 @@
+﻿@model QualificationSite.Models.Profile
+
+@{
+    Layout = "_Layout";
+}
+
+<form method="post" action="~/Profile/AddPhoto" enctype="multipart/form-data">
+    <input type="file" name="file"/>
+    <input type="submit" value="Загрузить"/>
+</form>
+
+<form method="post" action="~/profile/Edit/">
+    <div class="form-group">
+        <div class="p-2">
+            <label for="Name">Имя</label>
+            <input class="form-control" type="text" name="Name" placeholder="Введите имя" value=@Model.Name />
+        </div>
+        <div class="p-2">
+            <label for="Surname">Фамилия</label>
+            <input class="form-control" type="text" name="Surname" placeholder="Введите фамилию" value=@Model.Surname />
+        </div>
+        <div class="p-2">
+            <label for="Age">Возраст</label>
+            <input class="form-control" type="number" name="Age" placeholder="Введите возраст" value=@Model.Age />
+        </div>
+        <div class="p-2">
+            <label for="Languages">Языки</label>
+            <input class="form-control" type="text" name="Languages" placeholder="Введите языки, которыми вы владеете" value=@Model.Languages />
+        </div>
+        <div class="p-2">
+            <label for="University">Университет</label>
+            <input class="form-control" type="text" name="University" placeholder="Введите унивеситет" value=@Model.University />
+        </div>
+        <div class="p-2">
+            <label for="City">Город</label>
+            <input class="form-control" type="text" name="City" placeholder="Введите город" value=@Model.City />
+        </div>
+    </div>
+    <button type="submit">Редактировать</button>
+</form>

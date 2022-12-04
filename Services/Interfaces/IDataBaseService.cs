@@ -2,6 +2,6 @@
 
 public interface IDataBaseService
 {
-    public Task<string> GetNameById(long id);
-    public Task<long> GetIdByName(string name);
+    public Task<string> GetNameByIdAsync(long id);
+    public Task<long> GetIdByNameAsync(string name);
 }

@@ -39,7 +39,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute( // роут для отображения профилей.
     name: "profile",
-    pattern: "profile/{id:int}/",
+    pattern: "profile/{id:long}/",
     defaults: new { controller = "Profile", action = "Id" });
 
 app.MapControllerRoute(

@@ -12,14 +12,23 @@
 <div class="row justify-content-end">
     <div class="col col-2 align-content-end">
         <h6 class="float-start p-1"><span class="btn-info">Возраст:</span> @Model.Age лет</h6>
-        <h6 class="float-start p-1"><span class="btn-info">Языки:</span> @string.Join(", ", Model.Languages)</h6>
+        <h6 class="float-start p-1"><span class="btn-info">Языки:</span> @Model.Languages</h6>
         <h6 class="float-start p-1"><span class="btn-info">Образование:</span> @Model.University</h6>
         <h6 class="float-start p-1"><span class="btn-info">Город:</span> @Model.City</h6>
     </div>
     <div class="col col-auto align-content-start m-3">
         @{
             var photoPath = "profile_photo_" + Model.Id + ".jpg";
-            <img class="float-end" alt="Фото профиля" src="~/Resources/ProfilePhotos/@photoPath" width="150" height="200"/>
+            var filePath = ViewBag.Path + "\\Resources\\ProfilePhotos\\" + photoPath;
+            <img class="float-end" alt="Фото профиля" src="/Resources/ProfilePhotos/profile_photo_1.jpg" width="150" height="200"/>
+        }
+    </div>
+</div>
+<div class="row justify-content-end">
+    <div class="col col-auto align-content-end m-3">
+        @if (ViewBag.EditAccess != null && ViewBag.EditAccess == true)
+        {
+            <a href="/Profile/Edit/@Model.Id" class="btn btn-warning">Редактировать</a>
         }
     </div>
 </div>

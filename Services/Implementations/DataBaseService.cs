@@ -12,13 +12,13 @@ public class DataBaseService : IDataBaseService
     {
         this.context = context;
     }
-    public async Task<string> GetNameById(long id)
+    public async Task<string> GetNameByIdAsync(long id)
     {
         var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
         return user == null ? "BADREQUEST" : user.Login;
     }
 
-    public async Task<long> GetIdByName(string name)
+    public async Task<long> GetIdByNameAsync(string name)
     {
         var user = await context.Users.FirstOrDefaultAsync(u => u.Login == name);
         return user?.Id ?? -1;
