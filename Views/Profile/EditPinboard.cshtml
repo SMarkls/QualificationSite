@@ -1,0 +1,26 @@
+﻿@model List<QualificationSite.Models.ProfilePin>
+@{
+    Layout = "_Layout";
+}
+<div class="col align-content-center justify-content-center">
+    <div class="border border-dark">
+    <h1 class="m-5">Создать Пин</h1>
+        <form class="m-5" method="post" action="~/Profile/CreatePin">
+            <input class="form-control" type="text" name="Header" placeholder="Заголовок"/>
+            <input class="form-control" type="text" name="Text" placeholder="Описание"/>
+            <input class="form-control" type="text" name="LinkToAttachment" placeholder="Ссылка"/>
+            <input class="btn-primary" type="submit" name="Создать"/>
+        </form>
+    </div>
+    <div>
+        @foreach (var item in Model)
+        {
+            <div class="border border-dark m-5 p-2">
+                <h1>@item.Header</h1>
+                <h3>@item.Text</h3>
+                <h4>@item.LinkToAttachment</h4>
+                <a href="~/Profile/DeletePin/@item.Id" class="btn btn-danger">Удалить пин</a>
+            </div>
+        }
+    </div>
+</div>

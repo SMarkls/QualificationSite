@@ -69,4 +69,63 @@ public class ProfileService : IProfileService
             StatusCode = HttpStatusCode.Created
         };
     }
+
+    public async Task<BaseResponse<List<ProfilePin>>> GetPinsAsync(long profileId)
+    {
+        var pins = context.Pins.Where(p => p.ProfileId == profileId);
+        if (pins.Count() == 0)
+            return new BaseResponse<List<ProfilePin>>()
+            {
+                Data = new List<ProfilePin>(),
+                Description = "Пины не найдены",
+                StatusCode = HttpStatusCode.NotFound
+            };
+        else
+            return new BaseResponse<List<ProfilePin>>
+            {
+                Data = pins.ToList(),
+                Description = "Пины найдены",
+                StatusCode = HttpStatusCode.Accepted
+            };
+    }
+
+    public async Task<BaseResponse<ProfilePin>> GetPinAsync(long pinId)
+    {
+        var pin = await context.Pins.FirstOrDefaultAsync(p => p.Id == pinId);
+        return new BaseResponse<ProfilePin>
+        {
+            Data = pin,
+            Description = pin != null ? "Пин получен" : "Пин не найден",
+            StatusCode = pin != null ? HttpStatusCode.Found : HttpStatusCode.NotFound
+        };
+    }
+
+    public async Task<BaseResponse<bool>> DeletePinAsync(ProfilePin pin)
+    {
+        context.Pins.Remove(pin);
+        await context.SaveChangesAsync();
+        return new BaseResponse<bool>
+        {
+            Data = true,
+            Description = "Успешно удален пин",
+            StatusCode = HttpStatusCode.Accepted
+        };
+    }
+
+    public async Task<BaseResponse<bool>> CreatePinAsync(ProfilePinViewModel model)
+    {
+        var pin = new ProfilePin
+        {
+            Header = model.Header, LinkToAttachment = model.LinkToAttachment,
+            ProfileId = model.ProfileId, Text = model.Text
+        };
+        await context.Pins.AddAsync(pin);
+        await context.SaveChangesAsync();
+        return new BaseResponse<bool>
+        {
+            Data = true,
+            Description = "Пин успешно создан.",
+            StatusCode = HttpStatusCode.Accepted
+        };
+    }
 }

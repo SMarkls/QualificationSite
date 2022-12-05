@@ -1,9 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using QualificationSite.Models;
 
 namespace QualificationSite.ViewModel;
 
 public class ProfileViewModel
 {
+    public long Id { get; set; }
     [MaxLength(50)]
     public string Name { get; set; }
     [MaxLength(50)]
@@ -18,4 +20,5 @@ public class ProfileViewModel
 
     [MaxLength(50)]
     public string City { get; set; }
+    public List<ProfilePin> Pins { get; set; }
 }

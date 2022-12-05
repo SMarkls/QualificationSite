@@ -1,13 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QualificationSite.Models;
+namespace QualificationSite.ViewModel;
 
-public class ProfilePin
+public class ProfilePinViewModel
 {
-    [Key]
-    public long Id { get; set; }
-    [ForeignKey("profile")]
     public long ProfileId { get; set; }
     [MaxLength(50)]
     public string? Header { get; set; }

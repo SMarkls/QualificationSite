@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QualificationSite.Services.Interfaces;
 using QualificationSite.ViewModel;
 
@@ -26,24 +27,44 @@ public class ProfileController : Controller
         if (HttpContext.User.Identity is { IsAuthenticated: false })
             return RedirectToAction("Login", "Account");
         ViewBag.Path = appEnvironment.WebRootPath;
+        var pins = await service.GetPinsAsync(id);
         if (HttpContext.User.IsInRole("Admin"))
         {
             var response = await service.GetProfileAsync(id);
             if (response.StatusCode == HttpStatusCode.Found)
             {
                 ViewBag.EditAccess = true;
-                return View(response.Data);
+                ProfileViewModel model = new ProfileViewModel
+                {
+                    Age = response.Data.Age.Value, City = response.Data.City, Languages = response.Data.Languages,
+                    Name = response.Data.Name, Surname = response.Data.Surname, University = response.Data.University,
+                    Pins = pins.Data, Id = response.Data.Id
+                };
+                return View(model);
             }
         }
         if (await db.GetNameByIdAsync(id) == HttpContext.User.Identity.Name)
         {
             var response = await service.GetProfileAsync(id);
+            ProfileViewModel model;
             if (response.StatusCode == HttpStatusCode.Found)
             {
                 ViewBag.EditAccess = true;
-                return View(response.Data);
+                model = new ProfileViewModel
+                {
+                    Age = response.Data.Age.Value, City = response.Data.City, Languages = response.Data.Languages,
+                    Name = response.Data.Name, Surname = response.Data.Surname, University = response.Data.University,
+                    Pins = pins.Data, Id = response.Data.Id
+                };
+                return View(model);
             }
-            return View(response.Data);
+            model = new ProfileViewModel
+            {
+                Age = response.Data.Age.Value, City = response.Data.City, Languages = response.Data.Languages,
+                Name = response.Data.Name, Surname = response.Data.Surname, University = response.Data.University,
+                Pins = pins.Data, Id = response.Data.Id
+            };
+            return View(model);
         }
         return RedirectToAction("AccessRejected");
     }
@@ -89,6 +110,35 @@ public class ProfileController : Controller
     {
         if (ModelState.IsValid)
             await service.EditProfile(model, await db.GetIdByNameAsync(HttpContext.User.Identity.Name));
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> EditPinboard(long id)
+    {
+        if (await db.GetIdByNameAsync(HttpContext.User.Identity.Name) != id && !HttpContext.User.IsInRole("Admin"))
+            return RedirectToAction("AccessRejected");
+        var response = await service.GetPinsAsync(id);
+        var pins = response.Data;
+        return View(pins.ToList());
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> DeletePin(long id)
+    {
+        var response = await service.GetPinAsync(id);
+        if (response.StatusCode == HttpStatusCode.NotFound)
+            return RedirectToAction("AccessRejected");
+        await service.DeletePinAsync(response.Data);
+        return RedirectToAction("Index", "Home");
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> CreatePin(ProfilePinViewModel model)
+    {
+        var id = await db.GetIdByNameAsync(HttpContext.User.Identity.Name);
+        model.ProfileId = id;
+        await service.CreatePinAsync(model);
         return RedirectToAction("Index", "Home");
     }
 }

@@ -11,5 +11,6 @@ public class UsersDbContext : DbContext
     }
 
     public DbSet<Profile> Profiles { get; set; }
+    public DbSet<ProfilePin> Pins { get; set; }
     public DbSet<User> Users { get; set; }
 }

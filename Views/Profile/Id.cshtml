@@ -1,9 +1,8 @@
-﻿@model QualificationSite.Models.Profile
+﻿@model QualificationSite.ViewModel.ProfileViewModel
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Профиль";
 }
-<p class="p-0">Запрошен профиль с id: @Model.Id</p>
 <div class="row justify-content-end">
     <div class="col col-3 align-content-end">
         <h3>@Model.Name @Model.Surname</h3>
@@ -20,7 +19,14 @@
         @{
             var photoPath = "profile_photo_" + Model.Id + ".jpg";
             var filePath = ViewBag.Path + "\\Resources\\ProfilePhotos\\" + photoPath;
-            <img class="float-end" alt="Фото профиля" src="/Resources/ProfilePhotos/profile_photo_1.jpg" width="150" height="200"/>
+            if (File.Exists(filePath))
+            {
+                <img class="float-end" alt="Фото профиля" src="/Resources/ProfilePhotos/@photoPath" width="150" height="200"/>   
+            }
+            else
+            {
+                <p>Загрузите фото.</p>
+            }
         }
     </div>
 </div>
@@ -31,4 +37,22 @@
             <a href="/Profile/Edit/@Model.Id" class="btn btn-warning">Редактировать</a>
         }
     </div>
+</div>
+<div name="pinboard">
+    <div name="pins" class="row">
+        @foreach (var item in Model.Pins)
+        {
+            <div class="col-3 border border-dark m-1">
+                <h1>@item.Header</h1>
+                <h3>@item.Text</h3>
+                <h2>@item.LinkToAttachment</h2>
+            </div>
+        }
+    </div>
+    @if (ViewBag.EditAccess != null && ViewBag.EditAccess == true)
+    {
+        <div class="float-end">
+            <a href="/Profile/EditPinboard/@Model.Id" class="btn btn-warning">Редактировать<br>стену</a>
+        </div>
+    }
 </div>
