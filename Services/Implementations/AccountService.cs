@@ -28,24 +28,24 @@ public class AccountService : IAccountService
         if (check == null)
         {
             if (context.Users.Select(u => u.Email).Contains(model.Email))
-                return new BaseResponse<ClaimsIdentity>()
+                return new BaseResponse<ClaimsIdentity>
                 {
                     Description = "Пользователь с таким именем или Email'ом уже существует.",
                     StatusCode = HttpStatusCode.Conflict
                 };
-            string password = SHA256Converter.ConvertToSha256(model.Password);
+            string password = Sha256Converter.ConvertToSha256(model.Password);
             await context.Users.AddAsync(new User { Login = model.Login, Email = model.Email, Password = password, Role = "User"});
             await context.SaveChangesAsync();
             await profileService.CreateProfile();
             var result = Auth(context.Users.OrderBy(u => u.Id).Last());
-            return new BaseResponse<ClaimsIdentity>()
+            return new BaseResponse<ClaimsIdentity>
             {
                 Description = "Пользователь успешно зарегистрирован.",
                 StatusCode = HttpStatusCode.Created,
                 Data = result
             };
         }
-        return new BaseResponse<ClaimsIdentity>()
+        return new BaseResponse<ClaimsIdentity>
         {
             Description = "Пользователь с таким именем или Email'ом уже существует.",
             StatusCode = HttpStatusCode.Conflict
@@ -56,28 +56,26 @@ public class AccountService : IAccountService
     {
         User? check = await context.Users.FirstOrDefaultAsync(u => u.Login == model.Login) ??
                      await context.Users.FirstOrDefaultAsync(u => u.Email == model.Login);
-        if (check != null)
-        {
-            string password = SHA256Converter.ConvertToSha256(model.Password);
-            if (check.Password == password)
-                return new BaseResponse<ClaimsIdentity>
-                {
-                    Description = "Успешно авторизован.",
-                    StatusCode = HttpStatusCode.Accepted,
-                    Data = Auth(check)
-                };
+        if (check == null)
             return new BaseResponse<ClaimsIdentity>
             {
-                Description = "Неверный пароль",
+                Description = "Пользователь с таким именем не найден.",
                 StatusCode = HttpStatusCode.Conflict
             };
-        }
-
+        string password = Sha256Converter.ConvertToSha256(model.Password);
+        if (check.Password == password)
+            return new BaseResponse<ClaimsIdentity>
+            {
+                Description = "Успешно авторизован.",
+                StatusCode = HttpStatusCode.Accepted,
+                Data = Auth(check)
+            };
         return new BaseResponse<ClaimsIdentity>
         {
-            Description = "Пользователь с таким именем не найден.",
+            Description = "Неверный пароль",
             StatusCode = HttpStatusCode.Conflict
         };
+
     }
 
     private ClaimsIdentity Auth(User user)

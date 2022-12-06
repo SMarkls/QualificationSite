@@ -2,6 +2,7 @@
 @model List<QualificationSite.Models.ProfilePin>
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Редактирование пинов";
     var url = Context.Request.GetDisplayUrl();
     var profileId = url.Split("/")[^1];
 }
@@ -13,7 +14,7 @@
             <input class="form-control" type="text" name="Text" placeholder="Описание"/>
             <input class="form-control" type="text" name="LinkToAttachment" placeholder="Ссылка"/>
             <input class="btn-primary" type="submit" name="Создать"/>
-            <input type="hidden" name="profileId" value=@profileId/> 
+            <input type="hidden" name="profileId" value="@profileId" /> 
         </form>
     </div>
     <div>

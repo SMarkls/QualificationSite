@@ -26,18 +26,16 @@ public class AccountController : Controller
     [HttpPost]
     public async Task<IActionResult> Register(RegistryViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View();
+        var response = await service.Register(model);
+        if (response.StatusCode == HttpStatusCode.Created)
         {
-            var response = await service.Register(model);
-            if (response.StatusCode == HttpStatusCode.Created)
-            {
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(response.Data));
-                return RedirectToAction("Index", "Home");
-            }
-
-            ViewBag.ErrorDesc = response.Description;
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(response.Data));
+            return RedirectToAction("Index", "Home");
         }
+
+        ViewBag.ErrorDesc = response.Description;
 
         return View();
     }
@@ -45,29 +43,25 @@ public class AccountController : Controller
     [HttpGet]
     public IActionResult Login()
     {
-        if (User.Identity != null)
-        {
-            if (!User.Identity.IsAuthenticated)
-                return View();
-            ViewBag.Name = User.Identity.Name;
-        }
+        if (User.Identity == null) return RedirectToAction("Index", "Home");
+        if (!User.Identity.IsAuthenticated)
+            return View();
+        ViewBag.Name = User.Identity.Name;
         return RedirectToAction("Index", "Home");
     }
 
     [HttpPost]
     public async Task<IActionResult> Login(LoginViewModel model)
     {
-        if (ModelState.IsValid)
+        if (!ModelState.IsValid) return View(model);
+        var response = await service.Authenticate(model);
+        if (response.StatusCode == HttpStatusCode.Accepted)
         {
-            var response = await service.Authenticate(model);
-            if (response.StatusCode == HttpStatusCode.Accepted)
-            {
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(response.Data));
-                return RedirectToAction("Index", "Home");
-            }
-            ViewBag.ErrorDesc = response.Description;
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(response.Data));
+            return RedirectToAction("Index", "Home");
         }
+        ViewBag.ErrorDesc = response.Description;
 
         return View(model);
     }

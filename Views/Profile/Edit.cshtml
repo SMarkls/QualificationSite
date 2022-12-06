@@ -1,9 +1,9 @@
 ﻿@using Microsoft.AspNetCore.Http.Extensions
-@using QualificationSite.Models
 @model QualificationSite.Models.Profile
 
 @{
     Layout = "_Layout";
+    ViewData["Title"] = "Редактирование профиля";
 }
 
 <form method="post" action="~/Profile/AddPhoto" enctype="multipart/form-data">
@@ -15,29 +15,29 @@
     <div class="form-group">
         <div class="p-2">
             <label for="Name">Имя</label>
-            <input class="form-control" type="text" name="Name" placeholder="Введите имя" value=@Model.Name />
+            <input class="form-control" type="text" name="Name" placeholder="Введите имя" value="@Model.Name" />
         </div>
         <div class="p-2">
             <label for="Surname">Фамилия</label>
-            <input class="form-control" type="text" name="Surname" placeholder="Введите фамилию" value=@Model.Surname />
+            <input class="form-control" type="text" name="Surname" placeholder="Введите фамилию" value="@Model.Surname" />
         </div>
         <div class="p-2">
             <label for="Age">Возраст</label>
-            <input class="form-control" type="number" name="Age" placeholder="Введите возраст" value=@Model.Age />
+            <input class="form-control" type="number" name="Age" placeholder="Введите возраст" value="@Model.Age" />
         </div>
         <div class="p-2">
             <label for="Languages">Языки</label>
-            <input class="form-control" type="text" name="Languages" placeholder="Введите языки, которыми вы владеете" value=@Model.Languages />
+            <input class="form-control" type="text" name="Languages" placeholder="Введите языки, которыми вы владеете" value="@Model.Languages"/>
         </div>
         <div class="p-2">
             <label for="University">Университет</label>
-            <input class="form-control" type="text" name="University" placeholder="Введите унивеситет" value=@Model.University />
+            <input class="form-control" type="text" name="University" placeholder="Введите унивеситет" value="@Model.University" />
         </div>
         <div class="p-2">
             <label for="City">Город</label>
-            <input class="form-control" type="text" name="City" placeholder="Введите город" value=@Model.City />
+            <input class="form-control" type="text" name="City" placeholder="Введите город" value="@Model.City" />
         </div>
-        <input type="hidden" name="profileId" value=@Model.Id/> 
+        <input type="hidden" name="profileId" value=@Model.Id /> 
     </div>
     <button type="submit">Редактировать</button>
 </form>

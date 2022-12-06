@@ -70,18 +70,17 @@ public class ProfileService : IProfileService
         };
     }
 
-    public async Task<BaseResponse<List<ProfilePin>>> GetPinsAsync(long profileId)
+    public BaseResponse<List<ProfilePin>> GetPins(long profileId)
     {
         var pins = context.Pins.Where(p => p.ProfileId == profileId);
-        if (pins.Count() == 0)
-            return new BaseResponse<List<ProfilePin>>()
+        if (!pins.Any())
+            return new BaseResponse<List<ProfilePin>>
             {
                 Data = new List<ProfilePin>(),
                 Description = "Пины не найдены",
                 StatusCode = HttpStatusCode.NotFound
             };
-        else
-            return new BaseResponse<List<ProfilePin>>
+        return new BaseResponse<List<ProfilePin>>
             {
                 Data = pins.ToList(),
                 Description = "Пины найдены",

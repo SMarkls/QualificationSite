@@ -1,8 +1,5 @@
 ﻿using System.Net;
-using Azure.Core;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Primitives;
 using QualificationSite.Services.Interfaces;
 using QualificationSite.ViewModel;
 
@@ -36,48 +33,42 @@ public class ProfileController : Controller
         if (HttpContext.User.Identity is { IsAuthenticated: false })
             return RedirectToAction("Login", "Account");
         ViewBag.Path = appEnvironment.WebRootPath;
-        var pins = await service.GetPinsAsync(id);
+        var pins = service.GetPins(id);
         var profile = await service.GetProfileAsync(id);
         ProfileViewModel model;
         if (HttpContext.User.IsInRole("Admin"))
         {
-            var response = profile;
-            if (response.StatusCode == HttpStatusCode.Found)
+            if (profile.StatusCode == HttpStatusCode.Found)
             {
                 ViewBag.EditAccess = true;
                 model = new ProfileViewModel
                 {
-                    Age = response.Data.Age.Value, City = response.Data.City, Languages = response.Data.Languages,
-                    Name = response.Data.Name, Surname = response.Data.Surname, University = response.Data.University,
-                    Pins =  pins.Data, Id = response.Data.Id
+                    Age = profile.Data.Age.Value, City = profile.Data.City, Languages = profile.Data.Languages,
+                    Name = profile.Data.Name, Surname = profile.Data.Surname, University = profile.Data.University,
+                    Pins =  pins.Data, Id = profile.Data.Id
                 };
                 return View(model);
             }
         }
         if (await db.GetNameByIdAsync(id) == HttpContext.User.Identity.Name)
         {
-            var response = profile;
-            if (response.StatusCode == HttpStatusCode.Found)
+            if (profile.StatusCode != HttpStatusCode.Found) return RedirectToAction("CreateProfile");
+            ViewBag.EditAccess = true;
+            model = new ProfileViewModel
             {
-                ViewBag.EditAccess = true;
-                model = new ProfileViewModel
-                {
-                    Age = response.Data.Age.Value, City = response.Data.City, Languages = response.Data.Languages,
-                    Name = response.Data.Name, Surname = response.Data.Surname, University = response.Data.University,
-                    Pins = pins.Data, Id = response.Data.Id
-                };
-                return View(model);
-            }
-            return RedirectToAction("CreateProfile");
+                Age = profile.Data.Age.Value, City = profile.Data.City, Languages = profile.Data.Languages,
+                Name = profile.Data.Name, Surname = profile.Data.Surname, University = profile.Data.University,
+                Pins = pins.Data, Id = profile.Data.Id
+            };
+            return View(model);
         }
         if (profile.StatusCode == HttpStatusCode.Found)
         {
-            var response = profile;
             model = new ProfileViewModel
             {
-                Age = response.Data.Age.Value, City = response.Data.City, Languages = response.Data.Languages,
-                Name = response.Data.Name, Surname = response.Data.Surname, University = response.Data.University,
-                Pins = pins.Data, Id = response.Data.Id
+                Age = profile.Data.Age.Value, City = profile.Data.City, Languages = profile.Data.Languages,
+                Name = profile.Data.Name, Surname = profile.Data.Surname, University = profile.Data.University,
+                Pins = pins.Data, Id = profile.Data.Id
             };
             return View(model);
         }
@@ -98,9 +89,8 @@ public class ProfileController : Controller
     [HttpPost]
     public async Task<IActionResult> Edit(ProfileViewModel model)
     {
-        long profileId;
-        string str = HttpContext.Request.Form["profileId"].First();
-        profileId = long.Parse(str.Replace("/", ""));
+        string str = HttpContext.Request.Form["profileId"].First()!;
+        long profileId = long.Parse(str); // TODO: убрать Replace
         var id = await db.GetIdByNameAsync(HttpContext.User.Identity.Name);
         if (id != profileId && !HttpContext.User.IsInRole("Admin"))
             return RedirectToAction("AccessRejected");
@@ -115,12 +105,11 @@ public class ProfileController : Controller
     [HttpPost]
     public async ValueTask<IActionResult> AddPhoto(IFormFile file)
     {
-        long id;
         if (file != null)
         {
-            id = await db.GetIdByNameAsync(HttpContext.User.Identity.Name);
+            var id = await db.GetIdByNameAsync(HttpContext.User.Identity.Name);
             string path = @"/Resources/ProfilePhotos/profile_photo_" + id + ".jpg";
-            using var fs = new FileStream(appEnvironment.WebRootPath + path, FileMode.Create);
+            await using var fs = new FileStream(appEnvironment.WebRootPath + path, FileMode.Create);
             await file.CopyToAsync(fs);
             return Redirect("/profile/" + id);
         }
@@ -139,7 +128,7 @@ public class ProfileController : Controller
     {
         if (await db.GetIdByNameAsync(HttpContext.User.Identity.Name) != id && !HttpContext.User.IsInRole("Admin"))
             return RedirectToAction("AccessRejected");
-        var response = await service.GetPinsAsync(id);
+        var response = service.GetPins(id);
         var pins = response.Data;
         return View(pins.ToList());
     }
@@ -161,9 +150,8 @@ public class ProfileController : Controller
     [HttpPost]
     public async Task<IActionResult> CreatePin(ProfilePinViewModel model)
     {
-        long profileId;
         string str = HttpContext.Request.Form["profileId"].First();
-        profileId = long.Parse(str.Replace("/", ""));
+        long profileId = long.Parse(str);
         var id = await db.GetIdByNameAsync(HttpContext.User.Identity.Name);
         if (id != profileId && !HttpContext.User.IsInRole("Admin"))
             return Redirect("/profile/editpinboard/" + profileId); 

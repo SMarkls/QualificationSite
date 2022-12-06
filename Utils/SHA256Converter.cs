@@ -4,7 +4,7 @@ using BitConverter = System.BitConverter;
 
 namespace QualificationSite.Utils;
 
-public static class SHA256Converter
+public static class Sha256Converter
 {
     /// <summary>
     /// Хэш-код для хранения пароля в базе данных
