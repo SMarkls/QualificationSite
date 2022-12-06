@@ -1,4 +1,6 @@
-﻿@model QualificationSite.Models.Profile
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@using QualificationSite.Models
+@model QualificationSite.Models.Profile
 
 @{
     Layout = "_Layout";
@@ -9,7 +11,7 @@
     <input type="submit" value="Загрузить"/>
 </form>
 
-<form method="post" action="~/profile/Edit/">
+<form method="post" action="@Context.Request.GetDisplayUrl()">
     <div class="form-group">
         <div class="p-2">
             <label for="Name">Имя</label>
@@ -35,6 +37,7 @@
             <label for="City">Город</label>
             <input class="form-control" type="text" name="City" placeholder="Введите город" value=@Model.City />
         </div>
+        <input type="hidden" name="profileId" value=@Model.Id/> 
     </div>
     <button type="submit">Редактировать</button>
 </form>

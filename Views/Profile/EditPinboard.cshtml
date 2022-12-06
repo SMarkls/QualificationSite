@@ -1,6 +1,9 @@
-﻿@model List<QualificationSite.Models.ProfilePin>
+﻿@using Microsoft.AspNetCore.Http.Extensions
+@model List<QualificationSite.Models.ProfilePin>
 @{
     Layout = "_Layout";
+    var url = Context.Request.GetDisplayUrl();
+    var profileId = url.Split("/")[^1];
 }
 <div class="col align-content-center justify-content-center">
     <div class="border border-dark">
@@ -10,6 +13,7 @@
             <input class="form-control" type="text" name="Text" placeholder="Описание"/>
             <input class="form-control" type="text" name="LinkToAttachment" placeholder="Ссылка"/>
             <input class="btn-primary" type="submit" name="Создать"/>
+            <input type="hidden" name="profileId" value=@profileId/> 
         </form>
     </div>
     <div>

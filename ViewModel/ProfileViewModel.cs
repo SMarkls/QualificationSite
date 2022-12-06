@@ -20,5 +20,6 @@ public class ProfileViewModel
 
     [MaxLength(50)]
     public string City { get; set; }
-    public List<ProfilePin> Pins { get; set; }
+
+    public List<ProfilePin?>? Pins { get; set; } = new();
 }

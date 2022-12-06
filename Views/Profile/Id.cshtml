@@ -42,10 +42,10 @@
     <div name="pins" class="row">
         @foreach (var item in Model.Pins)
         {
-            <div class="col-3 border border-dark m-1">
-                <h1>@item.Header</h1>
-                <h3>@item.Text</h3>
-                <h2>@item.LinkToAttachment</h2>
+            <div class="col-3 offset-2 border border-dark m-1">
+                <h4>@item.Header</h4>
+                <h6>@item.Text</h6>
+                <p>@item.LinkToAttachment</p>
             </div>
         }
     </div>

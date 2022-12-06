@@ -12,4 +12,5 @@ public interface IProfileService
     public Task<BaseResponse<ProfilePin>> GetPinAsync(long pinId);
     public Task<BaseResponse<bool>> DeletePinAsync(ProfilePin pin);
     public Task<BaseResponse<bool>> CreatePinAsync(ProfilePinViewModel model);
+    public Task<BaseResponse<bool>> IsUserPinAsync(ProfilePin pin, long profileId);
 }

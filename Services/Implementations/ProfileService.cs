@@ -128,4 +128,22 @@ public class ProfileService : IProfileService
             StatusCode = HttpStatusCode.Accepted
         };
     }
+
+    public async Task<BaseResponse<bool>> IsUserPinAsync(ProfilePin pin, long profileId)
+    {
+        var profilePin = await context.Pins.FirstAsync(p => p.Id == pin.Id);
+        if (profilePin.ProfileId == profileId)
+            return new BaseResponse<bool>
+            {
+                Data = true,
+                Description = "Пин принадлежит этому пользователю.",
+                StatusCode = HttpStatusCode.Accepted
+            };
+        return new BaseResponse<bool>
+        {
+            Data = false,
+            Description = "Пин не принадлежит даному пользователю.",
+            StatusCode = HttpStatusCode.NotAcceptable
+        };
+    }
 }
