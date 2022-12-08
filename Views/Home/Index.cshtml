@@ -1,4 +1,14 @@
-﻿@{
+﻿@model List<QualificationSite.Models.Profile>
+
+@{
     ViewData["Title"] = "Домашняя страница";
 }
-
+<h3>Список всех профилей</h3>
+<div>
+    @foreach (var item in @Model)
+    {
+        <div>
+            <a class="text-primary" href="/Profile/@item.Id">@item.Name @item.Surname</a>
+        </div>
+    }
+</div>

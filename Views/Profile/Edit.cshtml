@@ -5,12 +5,13 @@
     Layout = "_Layout";
     ViewData["Title"] = "Редактирование профиля";
 }
+<a class="btn btn-primary" href="/Profile/@Model.Id">Вернуться</a>
+<div class="m-5"><br></div>
 
 <form method="post" action="~/Profile/AddPhoto" enctype="multipart/form-data">
     <input type="file" name="file"/>
     <input type="submit" value="Загрузить"/>
 </form>
-
 <form method="post" action="@Context.Request.GetDisplayUrl()">
     <div class="form-group">
         <div class="p-2">

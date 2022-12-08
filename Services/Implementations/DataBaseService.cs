@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Net;
+using Microsoft.EntityFrameworkCore;
+using QualificationSite.Models;
 using QualificationSite.Models.DataBase;
 using QualificationSite.Services.Interfaces;
 
@@ -22,5 +24,16 @@ public class DataBaseService : IDataBaseService
     {
         var user = await context.Users.FirstOrDefaultAsync(u => u.Login == name);
         return user?.Id ?? -1;
+    }
+
+    public async Task<BaseResponse<List<Profile>>> GetProfilesAsync()
+    {
+        List<Profile> list = await context.Profiles.ToListAsync();
+        return new BaseResponse<List<Profile>>
+        {
+            Data = list,
+            Description = "Список",
+            StatusCode = HttpStatusCode.Accepted
+        };
     }
 }
